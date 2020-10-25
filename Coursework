@@ -1,0 +1,732 @@
+%I used the template from Coursera course on LaTex by Danil Fyodorovykh%
+
+\documentclass[a4paper]{article} % this is used for comments
+\usepackage[utf8]{inputenc}
+%%% Дополнительная работа с математикой
+\usepackage{amsmath,amsfonts,amssymb,amsthm,mathtools} % AMS
+\usepackage{icomma} % "Умная" запятая: $0,2$ --- число, $0, 2$ --- перечислени
+
+\usepackage{times}
+
+%% Номера формул
+\mathtoolsset{showonlyrefs=true} % Показывать номера только у тех формул, на которые есть \eqref{} в тексте.
+
+%% Шрифты
+\usepackage{euscript}	 % Шрифт Евклид
+\usepackage{mathrsfs} % Красивый матшрифт
+
+%% Свои команды
+\DeclareMathOperator{\sgn}{\mathop{sgn}}
+
+%% Перенос знаков в формулах (по Львовскому)
+\newcommand*{\hm}[1]{#1\nobreak\discretionary{}
+{\hbox{$\mathsurround=0pt #1$}}{}}
+
+
+
+
+
+\title{Information Disclosure in Matching Mechanisms}
+\author{Alexey Sek}
+\date{2020}
+
+\begin{document}
+
+\maketitle
+
+
+\section*{Abstract}
+
+The purpose of this work is to review the literature that shows markets without prices can work using matching algorithms, describe their applications to facilitate people's activities that are already used in the real life and provide own model which studies revelation of preferences in a specific situation when agents have to state their preferences twice: they are able to change preferences after the first matching was done.
+
+
+
+
+\section{Introduction}
+\subsection{Motivation}
+
+Matching markets play a significant role in people's lives but as there are no prices or other things that aggregate the information, understanding whether people report true information or not - becomes essential for the appropriate work of matching algorithms.
+And because my personal interest is how to apply microeconomics to solve real problems, I chose to explore exactly the incentives that people have in matching markets. Thus, this work aims to provide a new approach, a new look at how to deal with factors that affect incentives of people in matching algorithms. Hope, this will help to get a deeper understanding of how to better design matching markets, considering possibly misreporting of information.
+
+\hfill 
+\break
+Understanding general principles of how people, firms or other agents act in making economic decisions is absolutely vital, however my point is that the most significant thing in microeconomics is how this understanding may be applied to solve practical problems that substantially affect people's lives
+
+\hfill 
+\break
+A common fact is that markets in the real life are often inefficient due to externalities, imperfect information, absence of perfect competition that all violate the First Fundamental Welfare Theorem. For that reason, in some cases when invisible hand does not work, markets should be designed.
+
+\hfill 
+\break
+It is extremely hard (if we assume it to be possible) to create a mechanism that in order to allocate resources in the most efficient way, processes all available information: preferences, conditions on financial markets, various risks and infinite set of other factors that impact economic decisions. An easy way to deal with almost endless information is to assert that prices include all necessary data for economic agents. Such powerful idea that prices is a considerable source of information was suggested by Hayek \cite{HayekPrices}.
+
+\hfill 
+\break
+Sure enough, prices play an incredibly important role in the majority of markets, also affecting connected markets. For instance, possible crop failure of potatoes will result in decreased supply of potatoes, so prices will continue to rise almost instantly after information about possible crop failure is revealed to economic agents. It is highly expected that prices in the markets for substitutes of potatoes will also rise because agents will react to the changes in connected markets. This situation is a simple example of what we mean by saying that prices include information.
+
+\hfill 
+\break
+However, there is a specific type of markets with the absence of prices or their equivalents. This may appear to be strange and not too realistic at the first glance but we do face such markets in our life: looking for a partner, choosing a school for a child, in some cases even the process of finding a job may be closely connected with described type of markets.
+
+\hfill 
+\break
+Obvious thing that may be suggested is to create a mechanism that introduces prices in such markets. 
+
+\hfill 
+\break
+In fact, people have different preferences and, consequently, value goods (or e.g. other people if we talk about partners) differently. But it will be considered unfair to establish different prices to different groups of people (i.e. price discrimination) without transparent and obvious grounds to do so. Especially when people or, for example, kidneys (not simple goods) are being allocated in the market. My hunch is that there is no mechanism that will give grounds for such price differentiation that will satisfy everyone and that is the case when matching markets come into business.
+
+
+\hfill 
+\break
+It is an open secret that people may change their preferences over time. We also know that there are some cases, for instance, insider trading, in which some agent has more information than others, so his actions will affect the behavior of less informed agents. The level of how informed agent can influence other agents - depends on the level of trust to this agent from other less informed agents.
+
+\hfill 
+\break
+This work will help to better understand how fully informed agents are supposed to act depending on the level of trust to them which, as I believe, depicts cases that frequently occur in the real life. Examples of such cases may be stock market trading, M\&A deals or other kinds of deals where some agents are more informed than others.
+
+\hfill 
+\break
+Due to the fact that described cases are closely related to the real life, I decided to study a specific matching problem where agents have asymmetric information and since there are two periods in this model, agents may change their preferences over time.
+
+
+
+
+
+
+\subsection{Research Question}
+
+\hfill 
+\break
+The model described in the previous subsection depicts a specific case with asymmetric information: one agent has more information than other agents. These agents know about the asymmetry of information and may trust this agent or not with a given probability and, consequently, adapt their preferences to the information revealed by the agent who has more information. Correspondingly, this agent has to decide whether it is better to reveal true or fake information.
+
+\hfill 
+\break
+\textbf{The question studied in this model is that:}
+How agent's incentives to report true preferences depend on the level of trust to this agent from other agents?
+
+\hfill 
+\break
+Generally, understanding how this agent with more information should act in the case when others absolutely trust him - is simple: it is more beneficial for this agent to give fake information in order to use it for his own benefit. But what will happen if, for instance, the level of trust is $50\%$ or, say, $30\%$? I consider it to be an interesting question.
+
+
+
+
+
+\subsection{Brief Description of the Model}
+In the previous subsection I mentioned the very general idea of the model. In this subsection I will describe it more precisely however without formal notations, definitions and technical questions. We will later observe them in the section devoted fully to the formal description of the model.
+
+\hfill 
+\break
+The most discussed and fundamental models as mentioned by Abdulkadiroglu, Atila and Sönmez \cite{MainSource} study only one period: matching is made once and for all. I noticed an interesting idea that was discussed in the work of  Roth, Alvin and Ockenfels \cite{LastMinuteBidding} that studied not actually matching markets but auction bidding. This idea is really simple: agents may change their preferences over time.
+Thus, the model provided in this work suggests two periods of time when matchings occur: after the initial matching occurred, agents may change their preferences. That seems to be a lot more realistic than the case of constant preferences.
+
+\hfill 
+\break
+Another interesting idea that lies in the basis of the model is that there is an asymmetry of information: one agent knows more than others, others know that this agent knows more and they can trust him or not with a given probability (note that their decisions to trust or not to trust are independent events - it may happen that one trusts and other does not trust). The level of trust (or probability of trusting this agent by other agents) is the main variable of this model. It determines what weakly dominant strategy of the agent, who has more information, is: lying or, on the contrary, truth-telling.
+
+\hfill 
+\break
+Of course, the agent with more information gets payoffs with some weights for each period of time: we will assume that these weights are equal. The total payoff that is equal to the weighted sum of payoffs for two periods which is used as the criteria for defining which strategy is dominant.
+
+
+
+
+
+\subsection{Structure of the Work}
+\textbf{The structure of the work will be simple:}
+We will start from discussing the literature on matching theory - history, main ideas and applications. Then we will discuss how this work relates to existing literature and develops this topic. Later we will move on to the formal definition of the model - notations, assumptions, rules. In the end we will look at the results that we got from studying suggested model. We will finish the work with a brief summary of what has been discussed.
+
+\hfill 
+\break
+\textbf{Sections of the work:}
+\begin{enumerate}
+    \item Introduction
+    \item Literature overview
+    \item Model: formal definition
+    \item Results
+    \item Summary
+\end{enumerate}
+
+
+% What if take the number of agents who wants you to be a partner as a benchmark instead of prices (it also gives market participants information)
+
+
+
+
+
+
+
+
+\section{Literature overview}
+Here the basics of matching algorithms will be studied in order to give a general understanding how they work, where they are used and, certainly, later to explain how the model provided in this work is organized. So, let's start with the history of matching theory.
+
+\subsection{Main Questions of Matching Theory}
+It is widely known that active development of matching theory started when Gale and Shapley presented their famous fundamental work “College admissions and the stability of marriage” in 1962 \cite{LastMinuteBidding}, for which they were later awarded with a Nobel Prize in Economics in 2012. 
+
+\hfill 
+\break
+The fact that I personally appreciate in matching theory is that it cannot be viewed as too abstract, without significant applications to the real life. Moreover, it was a milestone in the design of mechanisms that later were responsible for making people’s lives better and more convenient. 
+
+\hfill 
+\break
+Supposedly, many economists are interested in \textbf{how to allocate resources in the best way} but \textbf{what is meant by “the best way”?} This may be Pareto-efficiency, fair allocation or, what we are going to study, stable allocation. 
+
+\hfill 
+\break
+To understand the concept of stability better we have to consider ideas that Gale and Shapley had when developing their model. Assume there is a group of heterosexual men and a group of heterosexual women: how should they be allocated among each other, so that none of them will be able to change the partner (even if some single agents have incentives to exchange, their potential partners would cancel such exchange since their current partners are better). Such inability to change the existing situation is called stable allocation.
+
+\hfill 
+\break
+So, the problem, economists and mathematicians aimed to solve is \textbf{how to achieve stable allocation?} Definitely, as mentioned, such mechanisms were first developed by Gale and Shapley and we will discuss them later in detail. I have to say that such mechanisms usually use preferences to create stable allocations. 
+
+\hfill 
+\break
+But is it always possible to consider reported preferences to be truthful? 
+\textbf{Do agents have incentives to reveal their true preferences or truth-telling is not their weakly dominant strategy?} These questions are absolutely essential and are closely related to my own model. They are interesting due to their close connections with the real life: mechanism may be theoretically ideal in case of ideal information (incl. information about preferences), rational agents, but when it comes to life, those assumptions may fail. 
+
+\hfill 
+\break
+Thus, understanding how agents are supposed to reveal preferences is crucial. Let's define what strategy-proofness is, but without formal notations: the mechanism is called strategy-proof if revealing true preferences (or simply truth-telling) is a weakly dominant strategy for all agents. It was defined by Abdulkadiroglu, Atila and Sönmez in their work \cite{MainSource}.
+
+
+
+\subsection{Basic Concepts}
+Since we got acquainted with the main questions, matching theory aims to solve, our further explorations will concern several details about how matching algorithms actually work, for instance: What assumptions do they employ? What is really meant by the term "matching"? What types of matching algorithms do exist?
+
+
+\hfill 
+\break
+\textbf{Such algorithms rely on several assumptions and rules:}
+\begin{enumerate}
+    \item There are two disjoint groups of agents that seek for getting a pair with a member of the opposite group 
+    \item Each agent states own preferences over other agents as an ordered list - it is called linear order, preferences may be strict or weak but for simplicity we assume them to be strict. 
+    \item Preferences are complete and transitive (i.e. rational) 
+    \item No consumption externalities: agent makes choice based only on preferences, neglecting possible side affects. 
+\end{enumerate}
+
+
+\hfill 
+\break
+Without using formal notations matching may be defined as the instruction that specifies a pair for each agent. It may be visualized as a table where each agent is assigned to another agent. Certainly, there are many possible matchings, so several of them may be stable.
+
+
+
+\hfill 
+\break
+Two main types of matching algorithms are one-sided matching and two-sided matching.
+One-sided matching is the case when one side has no preferences (e.g. housing market - houses have no preferences, but people do). 
+Naturally, there exist cases of so-called one-to-one and many-to-one matching.
+The first one implies situations when individuals from both groups can pair only with one individual from opposite group (e.g. monogamous marriage). The second is applicable to situations when agents from one side can pair with more than one agent from opposite group (e.g. schools and students).
+
+
+
+
+
+
+
+\subsection{Examples of Mechanisms}
+
+Probably, the most well-known mechanisms of two-sided matchings are those suggested by Gale and Shapley in their work \cite{MilestoneWork} that became a milestone of matching theory. These are stable marriage problem and college admission. In this subsection we will discuss mainly the first one. 
+
+
+\subsubsection{Stable Marriage Problem}
+This mechanism is probably the most simple \textbf{one-to-one matching} algorithm, so that is the great point to start our detailed introduction to matching algorithms. Later we will move to the discussion of more sophisticated mechanisms.
+
+\hfill 
+\break
+\textbf{Main steps of Deferred Acceptance Algorithm (DAA),} according to the work of Abdulkadiroglu, Atila and Sönmez \cite{MainSource}:\\
+\textbf{Step 1:} each woman goes to the most preferred man\\
+\textbf{Step 2:} each man chooses the most preferred woman among those who came to him\\
+\textbf{Step 3:} each woman that did not get a pair goes to the second most preferred vacant man\\
+\textbf{Step 4:} each man chooses the most preferred woman who came to him\\
+\textbf{Step 5:} each woman that did not get a pair goes to the third most preferred vacant man\\
+\textbf{Step 6:} each man chooses the most preferred woman who came to him
+
+\hfill 
+\break
+Algorithm \textbf{terminates} when no rejections occur
+
+\hfill 
+\break
+The similar logic applies to the Men-Proposing Deferred Acceptance Algorithm
+
+\hfill 
+\break
+That simple mechanism allows to create stable matchings in not too sophisticated cases. There are many variations of such mechanism: matching with couples, many-to-one matching, approximate matching for large markets, etc.
+
+\hfill 
+\break
+DAA allows to get a stable matching for \textbf{every} stable marriage problem, as proved by Gale and Shapley \cite{MilestoneWork}.
+
+\hfill 
+\break
+The stable matching under women-proposing deferred acceptance algorithm is \textbf{weakly preferred by each woman} to any other stable matching. The same for men: stable matching under men-proposing deferred acceptance algorithm is weakly preferred by each man to any other stable matching, as stated by Abdulkadiroglu, Atila and Sönmez \cite{MainSource}.
+
+
+
+
+
+
+\subsubsection{College Admissions Problem}
+From the first glance this college admissions problem may seem to be equivalent to marriage problem, however that is absolutely incorrect. Alvin Roth in 1984-1985 wrote an article with a striking name "The College Admissions Problem Is Not Equivalent to Marriage Problem" \cite{RothCollege}.
+
+\hfill
+\break
+The main difference with the previous mechanism is that here we deal with \textbf{many-to-one matching} instead of one-to-one matching. It is rather natural problem that arises when one side can pair with more than one agent from another side. Common example is a college admission when many students may study at one university which exactly represents many-to-one concept as described in the article by Abdulkadiroglu, Atila and Sönmez \cite{MainSource}.
+
+\hfill
+\break
+\textbf{Assumptions of the mechanism:}
+\begin{enumerate}
+    \item The composition of the class does not affect preferences of students (students choose colleges, neglecting classmates)
+    \item Colleges select students neglecting the fact that they should be the same level as already selected students
+\end{enumerate}
+
+\hfill 
+\break
+\textbf{Main steps of this algorithm}, according to the work of Abdulkadiroglu, Atila and Sönmez \cite{MainSource}:\\
+\textbf{Step 1:} each college goes to its top preferred students. If it has fewer acceptable students than the number of its top preferred students - then it proposes only to the top preferred acceptable number students\\
+\textbf{Step 2:} each student rejects all unacceptable colleges and chooses the most preferred college who came to him if more than one came. After accepting an offer from a college - the student can no more change this choice.\\
+\textbf{Step 3:} algorithm repeats until no rejections occur
+
+\hfill 
+\break
+College-Proposing DAA allows to get a stable matching for \textbf{every} college admissions problem, as proved in the work of Gale and Shapley \cite{MilestoneWork}.
+
+
+
+
+
+\subsubsection{House Allocation Problem}
+There is a specific group of stable one-sided matching mechanisms which are used for allocation of indivisible objects among people in the absence of money and prices. One of the most simple problems is House Allocation Problem which was described by Hylland and Zeckhauser \cite{HouseAllocation}.
+
+\hfill
+\break
+The thing that should be considered here is the value that applications of such mechanisms have for people's lives: they are used to determine campus housing at many universities which is definitely a thing of great importance for students.
+
+
+
+
+
+
+
+
+\subsubsection{Simple Serial Dictatorship Mechanism}
+This is another interesting mechanism related to matching theory that was described in detail in the work of Abdulkadiroglu, Atila, Sönmez \cite{MainSource}.
+
+\hfill
+\break
+Suppose, there exists an ordered list of agents. The agent who is ordered first - gets the right to choose first and obviously takes his first choice. Second agent ordered - chooses his top choice from all options excluding the one chosen. So the third chooses his top choice from all options excluding the two chosen. These ideas goes on until all agents made their choices.
+
+\hfill
+\break
+Such mechanism is both Pareto efficient and strategy-proof, which is stated in the work of Abdulkadiroglu, Atila, Nikhil, Agarwal and Pathak \cite{AmericanEconomicAssociation}. However, question about how to create an ordered list that is fair - naturally arises. Actually, we will not consider that question and move to the real life applications of matching theory.
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Applications of Matching Theory}
+
+As already mentioned, matching theory has strong application to the real problems that people face in their day-to-day life. In this section we will observe the most famous applications of matching mechanisms. Since that subsection is aimed mainly at describing the value of matching theory to the society, we will not discuss formal and detailed theoretical questions.
+
+\subsubsection{Job Market for Doctors}
+Designing a matching mechanism for labor market for doctors or psychologists was probably the most famous and substantial application of matching mechanisms covered in the following work by Cseh and Agnes \cite{Complexity}. The issue is that there is a multitude of doctors and psychologists that have just graduated from universities and waiting to get a job: how to allocate those recent graduates among employers (hospitals) in such way that both sides will remain satisfied.
+
+\hfill
+\break
+The problem with a few doctors and a few hospitals seems to be not really hard, each agent can reveal the full list of preferences over the set of agents from an opposite side. But in large markets, as they are so in the real life, revelation of the full list of preferences is not so obvious.
+
+
+\hfill
+\break
+Interesting fact is that both hospitals and graduates do not have to create an ordered list of all agents from the opposite site - it will be both too unreal to create such list and too computationally hard. Instead of that both sides have to reveal only a short list of preferences. Nevertheless, even if preferences are not full, matching algorithms are able to create a stable matching in described markets with the probability that converges to 1 if the size of the market approaches to infinity as described in the work of Kojima, Pathak and Roth \cite{CouplesMatching}.
+
+\hfill
+\break
+Another exciting yet hard problem associated with job markets is to determine whether it is possible to create a stable matching in the problem where some doctors form couples (by marrying each other). That specific problem is closely related to the real life cases: during educational process it is quite frequent for doctors or psychologists to marry someone from their course. The problem that naturally arises from that is how to allocate recent graduates in such way that couples will work in the same hospital or at least in the same city. Related problems include how couples should report their preferences, how existence of couples will affect other participants of the labor market and who should be prioritized in matching: couples or single applicants which was discussed by Kojima, Pathak and Roth \cite{CouplesMatching}.
+
+
+
+
+
+
+\subsubsection{Organ Exchange}
+
+Organ exchange is a more general problem that mechanisms face, however we will mainly focus on kidney exchange problem. The importance of that problem lies in the fact that, for instance, in USA about $100000$ people are in the kidney exchange waiting list. That is a huge number of people whose lives are directly affected by matching algorithms as studied in the work of Tim Roughgarden \cite{KidneyExchange}.
+
+\hfill
+\break
+A common fact is that organs may be incompatible with a particular patient, for example, due to different blood types. So, even if a person found a donor, there is no guarantee that the donor's organ will suit that definite patient. Fortunately, that problem may be overcome if patients who found donors - exchange donors in such way that each of them gets a donor with a compatible organ. Stable matching algorithms are used to solve such exchange problem as considered by Roughgarden \cite{KidneyExchange}.
+
+
+
+
+
+
+
+\subsubsection{College Admissions}
+
+Finding solution of the college admissions problem is certainly less vital than finding solution to organ exchange problem. Nevertheless, its importance is also very high: education partially determines the quality of life people will face in the future, which is absolutely substantial for most of the people. That is the reason why solving this problem using matching theory will impact people's lives.
+
+\hfill
+\break
+The use of matching algorithms ensures that students get education at their top-choice university from those universities that are ready to invite this student. This means that, if, for instance, there are two students who applied to one and only university: a student with lower score will not be able to enter that university if a student with higher score could not enter it. So, it appears to be a relatively fair mechanism that solves college admissions problem.
+
+
+
+
+
+
+\subsection{Connections of This Work with Discussed Literature}
+I provided all discussed literature in order to explain that matching theory is not only an interesting field of study but is also essential for solving various problems that people face in their everyday life. Designing matching mechanisms that work properly requires taking into account the possible misreporting of information by agents. As mentioned before, this idea is the focus of my work.
+
+\hfill 
+\break
+Incentives to report true or fake preferences in matching markets when matching is made once and for all, were already studied by many researchers. In my work, I assume that there are two periods of time: after the initial matching was made, agents may change their preferences due to the fact that they may possibly get more information that will affect their economic decisions. To my mind, this idea is a logical continuation of problems that were discussed in provided literature.
+
+
+
+
+
+
+
+
+
+\section{Two-Period Matching Model}
+We will discuss a case when there are only three agents from proposing side: one with more information and two with less information. Certainly, that model may be easily extended to a higher number of agents, but for understanding of how the model works, three agents overall will be enough.
+
+\hfill
+\break
+Though strategy-proofness has already been deeply explored, personally, I have not found research on the case of optimal matching when after the first matching is found, agents may change their preferences and match the second time (a kind of two-period matching). An idea of two-period mechanism came from the article about last minute bidding, written by Roth and Ockenfels \cite{LastMinuteBidding}.
+
+\hfill
+\break
+Here I will suggest what can make agents change their preferences and how the level of trust from other agents to an agent, who has more information, determines the behavior (truth-telling or lying) of the agent who "knows more".
+
+
+
+
+
+
+
+\subsection{Formal Notations and Assumptions}
+Let's recall: in the literature overview we studied women-proposing deferred acceptance algorithm. Man-proposing deferred acceptance algorithm works definitely in the same way, though proposing side has changed.
+
+\hfill 
+\break
+Now suppose we have a simple marriage problem and men-proposing DAA with \textbf{additional assumptions}:
+\begin{enumerate}
+    \item All men would have the same preferences if complete information is available to each of them, the difference in their actual preference lists is determined by an asymmetry of information
+    \item Only man $m_1$ has complete information, other men have partial information
+    \item All other men know that $m_1$ has complete information, so his preferences, reported in the first round, will affect other men's preference lists
+    \item Initial preferences of other men are not the same as preferences of $m_1$ because they do not know his preferences before the first matching occurred
+    \item All other men assume that $m_1$ reports true preferences with a given probability $\alpha$ (they trust him with probability $\alpha$)
+    \item After initial matching - men can change their preferences and the second matching occurs (man-proposing DAA is used in both matchings)
+    \item Women cannot change preferences over time
+    \item Other agents can see each others' preferences, including $m_1$, only after the end of the first round
+    \item Only two rounds exist, so result of the second round is the final matching
+    \item Total payoff of each man, including $m_1$, equals to the weighted average of two periods: we suppose that the weight for each period is equal to $0.5$
+\end{enumerate}
+
+\hfill 
+\break
+\textbf{Following notations were borrowed from the work of Abdulkadiroglu, Atila and Sönmez} \cite{MainSource}.
+
+
+\hfill 
+\break
+\textbf{General notations}:
+\begin{itemize}
+  \item $M \text{ is a finite set of men}$
+  \item $W \text{ is a finite set of women}$
+  \item $\succ_m \text{denotes the strict preference relation of man m over W}$
+  \item $\succ_w \text{denotes the strict preference relation of woman w over M}$
+  \item $\succ_i \text{denotes the strict preference relation of agent i} \in M \cup W$
+\end{itemize}
+
+\hfill 
+\break
+\textbf{Example of notation for man} $m$:
+\begin{itemize}
+    \item $w \succ_m w'$ - woman $w$ is better than woman $w'$ for a man $m$
+    \item $w \succ_m m$ - woman $w$ is better than remaining alone for a man $m$
+    \item $m \succ_m w$ - woman $w$ is unacceptable to a man $m$
+\end{itemize}
+The same notation is applicable to each man or woman while describing preferences over the set of possible partners. 
+
+\hfill 
+\break
+\textbf{The formal definition of a matching} (case of a marriage problem) includes that it is a function $\mu : M \cup W \Rightarrow M \cup W$ such that:
+\begin{itemize}
+    \item $\mu(m) \notin W \Rightarrow \mu(m)=m$ for all $m \in M$ - man m remains single
+    \item $\mu(w) \notin M \Rightarrow \mu(w)=w$ for all $w \in W$ - woman w remains single
+    \item $\mu(m)=w \Leftrightarrow \mu(w)=m$ for all $m \in M$, $w \in W$- man m and woman w are paired
+\end{itemize}
+
+\hfill 
+\break
+\textbf{Stability concept, formal definition}:
+Matching $\mu$ is blocked by an individual if $i \succ_i \mu(i), \text{for some } i \in M \cup W$ or to put it simpler if individual prefers to remain alone to being with a partner assigned by a matching.\\
+Matching $\mu$ is blocked by a pair $(m,w) \in M \cup W$ if they both prefer each other to their partners under matching $\mu$, i.e. $w \succ_m \mu(m)$ and $m \succ_w \mu(w)$.
+
+\hfill 
+\break
+A matching is \textbf{stable} if it is not blocked by any individual or a pair.
+We know that man-proposing DAA will create a stable matching
+
+
+
+
+
+
+
+\subsection{Formal Definition of the Model}
+We assumed that in the first matching $m_1$ may report both true or fake preferences while in the second matching $m_1$ reports true preferences. Since $m_2$ and $m_3$ may trust $m_1$ or not, there are 4 possible variations: $m_2$ and $m_3$ trust; $m_2$ trusts and $m_3$ does not trust, $m_2$ does not trust and $m_3$ trusts, $m_2$ and $m_3$ do not trust.
+
+\hfill
+\break
+So, for each variation of $m_1$ reporting true or fake preferences, there are 4 variations of $m_2$ and $m_3$ behavior. Consequently, we have to calculate payoffs for $2 \times 4$ variations, considering that total payoff is the mean of the first and the second matchings. Here I have to remind you that $m_2$ and $m_3$ trust $m_1$ or not with probability $\alpha$.
+
+\hfill
+\break
+\textbf{Definition of a payoff $m_1$:}
+Suppose that $m_1$ payoff from each round depends on the woman he got: for the first-preferred woman in his true preference list \textbf{$\succ_{m_1 true}$} — he gets $3$ points, for the second-preferred — $2$ points, for the third-preferred — $1$ point and $0$ points for staying alone.
+
+\hfill
+\break
+Let's now compare expected payoffs of $2$ variations of $m_1$ behavior in the first round: truth-telling and lying.
+
+
+\hfill
+\break
+\textbf{Additional formal notations:}\\
+Payoff of $m_1$ is a function $P$ that takes 3 arguments:\\
+$m_1^+$ means that $m_1$ tells truth; $m_1^-$ means that $m_1$ lies\\
+$m_2^+$ means that $m_2$ trusts; $m_2^-$ means that $m_2$ does not trust\\
+$m_3^+$ means that $m_3$ trusts; $m_3^-$ means that $m_3$ does not trust\\
+Total payoff from truth-telling is $TP_t$\\
+Total payoff from lying is $TP_l$
+
+\hfill
+\break
+\textbf{Expected total payoff from truth-telling:}
+\begin{align}
+   TP_t = \alpha ^ 2P(m_1^+,m_2^+,m_3^+) + \alpha(1-\alpha)P(m_1^+,m_2^+,m_3^-) + \\  +(1-\alpha)\alpha P(m_1^+,m_2^-,m_3^+) + (1-\alpha)(1-\alpha) P(m_1^+,m_2^-,m_3^-) 
+\end{align}
+
+\hfill
+\break
+\textbf{Expected total payoff from lying:}
+\begin{align}
+   TP_l = \alpha ^ 2P(m_1^-,m_2^+,m_3^+) + \alpha(1-\alpha)P(m_1^-,m_2^+,m_3^-) + \\  +(1-\alpha)\alpha P(m_1^-,m_2^-,m_3^+) + (1-\alpha)(1-\alpha) P(m_1^-,m_2^-,m_3^-) 
+\end{align}
+
+\hfill
+\break
+\textbf{Solving the following inequality to get the values of $\alpha$ for which truth-telling will be a weakly dominant strategy for $m_1$:}
+\[
+TP_t \geq TP_l
+\]
+
+
+
+
+
+
+
+
+\section{Results}
+In the previous section we considered the general form of two-period matching model with three agents from each side. Here we will look at the specific example in order to better understand how the model works and what calculations need to be done.
+
+
+
+
+
+
+\subsection{Specific Example}
+
+Notation used in that section will be the same as in the classic stable marriage problem, \textbf{except} ${\succ_{m_1 true}}$ that denotes true preferences of $m_1$
+and ${\succ_{m_1 fake}}$ that denotes fake preferences of $m_1$
+
+\hfill
+\break
+Let \textbf{women's preference} lists be as follows:
+\begin{itemize}
+    \item $\succ_{w_1} = [m_1, m_2, m_3, (w_1)]$
+    \item $\succ_{w_2} = [m_2, m_1, m_3, (w_2)]$
+    \item $\succ_{w_3} = [m_3, m_2, m_1, (w_3)]$
+\end{itemize}
+
+\hfill
+\break
+\textbf{Assumption:} in case of reporting fake preferences $m_1$ will choose his second-best woman to be in the first place of an ordered list: it will maximize his total payoff
+
+\hfill
+\break
+Let \textbf{men's preference} lists for the first matching be as follows (after this first matching, they may change):
+\begin{itemize}
+    \item $\succ_{m_1 true} = [w_3, w_2, w_1, (m_1)]$ - let's assume he will always report true preferences in the second matching
+    \item $\succ_{m_1 fake} = [w_2, w_3, w_2, (m_1)]$ - may report fake preferences in the first matching
+    \item $\succ_{m_2} = [w_1, w_2, w_3, (m_2)]$
+    \item $\succ_{m_3} = [w_2, w_1, w_3, (m_3)]$
+\end{itemize}
+
+\hfill
+\break
+\textbf{How preferences of $m_2$ and $m_3$ will change after the first round?}
+If agents $m_2$ and $m_3$ trust $m_1$, then their preferences for the second matching will be the same as preferences of $m_1$ in the first round. If they do not trust $m_1$, then their preferences will differ from preferences of $m_1$ in the first round: the first and the second-preferred will be reversed, compared to the preferences reported in the first round by $m_1$, because they know assumption about $m_1$ which was stated in the previous paragraph.
+
+
+
+
+
+
+\subsection{Solution}
+I used men-proposing DAA in order to assign partners at each matching. For our case with only three agents at each side, understanding matchings is extremely simple. 
+I consider that describing eight matchings in detail will be excessive. 
+So, here we will firstly look at one case in detail and then use already calculated payoffs for other cases.
+
+\hfill
+\break
+\textbf{The case when $m_1^+,m_2^+,m_3^+$:}\\
+Here $m_1$ will have the same preferences for both matchings, $m_2$ and $m_3$ in the second matching will have the same preferences as $m_1$.
+
+\hfill
+\break
+According to the men-proposing DAA, the first matching will be as follows:
+\[
+    m_1 \rightarrow w_3\\
+\]
+\[   
+    m_2 \rightarrow w_1\\
+\]
+\[
+    m_3 \rightarrow w_2
+\]
+From this matching $m_1$ will get payoff equal to $3$ (he got his top preferred choice)
+
+\hfill
+\break
+After $m_2$ and $m_3$ changed their preferences, all men have the same preference lists, so the second matching will be as follows:
+\[
+    m_1 \rightarrow w_1\\
+\]
+\[   
+    m_2 \rightarrow w_2\\
+\]
+\[
+    m_3 \rightarrow w_3
+\]
+From this matching $m_1$ will get payoff equal to $1$ (he got his less preferred choice)
+
+\hfill
+\break
+\textbf{So payoff for this case will be:}
+$P(m_1^+,m_2^+,m_3^+) = 0.5 \cdot 3 + 0.5 \cdot 1 = 1.5 + 0.5 = 2$
+
+
+\hfill
+\break
+\textbf{Other payoffs were calculated using the same operations.}
+
+
+\hfill
+\break
+\textbf{Expected payoffs from truth-telling:}\\
+$P(m_1^+,m_2^+,m_3^+) = 2\\
+P(m_1^+,m_2^+,m_3^-) = 2\\
+P(m_1^+,m_2^-,m_3^+) = 2\\
+P(m_1^+,m_2^-,m_3^-) = 3$
+
+\hfill
+\break
+\textbf{Expected payoffs from lying:}\\
+$P(m_1^-,m_2^+,m_3^+) = 2.5\\
+P(m_1^-,m_2^+,m_3^-) = 1.5\\
+P(m_1^-,m_2^-,m_3^+) = 1.5\\
+P(m_1^-,m_2^-,m_3^-) = 1.5$
+
+\hfill
+\break
+\textbf{Put calculated values into described inequality $TP_t \geq TP_l$:}
+\[
+    2\alpha ^ 2 + 2\alpha(1-\alpha) + 2(1-\alpha)\alpha + 3(1-\alpha)^2 \geq 2.5\alpha ^ 2 + 1.5\alpha(1-\alpha) + 1.5(1-\alpha)\alpha + 1.5(1-\alpha)^2
+\]   
+\[
+    \alpha ^ 2 - 2\alpha + 3 \geq \alpha ^ 2 + 1.5
+\]  
+\[
+    -2\alpha + 1.5  \geq 0
+\]    
+\[
+    \alpha  \leq 0.75
+\]
+
+\hfill
+\break
+\textbf{Result:} if $\alpha  \leq 0.75$, then $m_1$ will prefer to tell the truth.
+
+\hfill
+\break
+The intuition here is really simple: when informed agent knows that most of other agents trusts him - reporting of fake preferences will be beneficial - most of other agents will use information about fake preferences of $m_1$ to change their preferences - and this is exactly what $m_1$ desired: to trick others. On the contrary, when informed agent knows that very few agents trust him - revealing true preferences will be an optimal strategy since most of other agents will think that these preferences are fake and will not use the information about true preferences of $m_1$ to change their preferences. The demarcation line between what is "few agents" and what is "most of other agents" here is $0.75$.
+
+
+
+
+
+
+\section{Summary}
+To summarize, firstly, we discussed the main aspects of the matching theory, observed some basic algorithms and got acquainted with major applications that are actively used in the real life. Later we moved to the core of that work: creating a new model that requires two periods of matchings and preferences that may change over time. Finally, we analyzed a specific example of suggested two-period matching model and calculated that if the level of trust to $m_1$ is relatively low, his weakly dominant strategy will be truth-telling. In the contrary, if the level of trust to $m_1$ is relatively high, then lying will be a weakly dominant strategy for $m_1$. These results seem to be logical.
+
+\hfill
+\break
+Despite the key value of that work is definitely discovering incentives of a special type of agents to reveal true preferences, another considerable thing is suggesting a model where agents' preferences are not constant and may change over time, implying strategic interactions among agents.
+
+\hfill
+\break
+Sure enough, suggested model is quite simple. It may be extended and complicated by adding more than one agent who has complete information or by allowing non-proposing side also to change preferences over time, or even suggest 3 (or more) periods of the game. Another extensions may include different levels of trust from different agents. One more complication may be assigning different weights to the first and the second period (here we assumed that their weights are equal) However, this work ends up here, leaving a field for further studies.  
+
+\begin{thebibliography}{9}
+
+\bibitem{HayekPrices} F. A. Hayek 1945. "The Use of Knowledge in Society". The American Economic Review, Vol. 35, No. 4. pp. 519-530.
+
+\bibitem{MilestoneWork} D. Gale and L. S. Shapley. 1962. "College Admissions and the Stability of Marriage". The American Mathematical Monthly Vol. 69, No. 1, pp. 9-15.
+
+\bibitem{LastMinuteBidding} Roth, Alvin, E., and Axel Ockenfels. 2002. "Last-Minute Bidding and the Rules for Ending Second-Price Auctions: Evidence from eBay and Amazon Auctions on the Internet". American Economic Review, 92 (4): 1093-1103. 
+
+\bibitem{MainSource} Abdulkadiroglu, Atila \& Sönmez, T. 2011. "Matching markets: Theory and practice". Advances in Economics and Econometrics: Tenth World Congress, Volume I: Economic Theory. 1-47.
+
+\bibitem{AmericanEconomicAssociation} Abdulkadiroglu, Atila \& Nikhil, Agarwal \& Parag Pathak. 2018. "Matching Market Design". AEA Continuing Education Program.
+
+\bibitem{CouplesMatching} Fuhito Kojima \& Parag A. Pathak \& Alvin E. Roth. 2013. "Matching with Couples: Stability and Incentives in Large Markets". The Quarterly Journal of Economics, Oxford University Press, vol. 128(4), pages 1585-1632.
+
+\bibitem{Manipulations} Rohit Vaish, Dinesh Garg. 2017. "Manipulating Gale-Shapley Algorithm: Preserving Stability and Remaining Inconspicuous". Twenty-Sixth International Joint Conference on Artificial Intelligence (IJCAI-17)
+
+\bibitem{ManipulationsRevealed} Aziz, Haris \& Seedig, Hans Georg \& Wedel, Jana. 2015. "On the Susceptibility of the Deferred Acceptance Algorithm". AAMAS '15: Proceedings of the 2015 International Conference on Autonomous Agents and Multiagent Systems
+
+\bibitem{Complexity} Cseh, Agnes. 2016. "Complexity and algorithms in matching problems under preferences". 10.14279/depositonce-5076.
+
+\bibitem{RothStability} Alvin Roth. 1982. "The Economics of Matching: Stability and Incentives". Mathematics of Operations Research, vol. 7, issue 4, 617-628
+
+\bibitem{RothCollege} Alvin Roth. 1985. "The College Admissions Problem Is Not Equivalent to Marriage Problem".JOURNAL OF ECONOMIC THEORY 36, 277-288
+
+\bibitem{HouseAllocation} Hylland, Aanund and Zeckhauser, Richard. 1979. "Allocation of Individuals to Positions". Journal of Political Economy, 87, issue 2, p. 293-314.
+
+\bibitem{KidneyExchange} Tim Roughgarden. 2013. "Kidney Exchange and Stable Matching". https://theory.stanford.edu
+
+
+
+\end{thebibliography}
+
+
+
+\end{document}
